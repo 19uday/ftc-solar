@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
 import ButtonAppBar from './ButtonAppBar';
+import ButtonAppBarr from './ButtonAppBarr';
 import ImageMapper from 'react-image-mapper';
 import { connect } from 'react-redux';
 import Section from './Section';
 import { setstatic } from './actions/setstatic';
+import Navigation from './Navigation';
 
 
 class Home extends Component{
@@ -31,10 +33,9 @@ class Home extends Component{
 
 		return(
 			<div>
-				<ButtonAppBar />
-				<div>
-					<Section />
-				</div>
+					
+					<ButtonAppBarr />
+					<Navigation />
 			</div>
 
 		);

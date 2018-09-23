@@ -4,3 +4,10 @@ export function setstatic(statics) {
       payload: statics
     }
   }
+
+export function setnavigationitem(item) {
+    return {
+      type: 'setnavigationitem',
+      payload: item
+    }
+  }

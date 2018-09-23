@@ -4,9 +4,8 @@ const initialState = {
   currentZone: null,
   currentRow: null,
   statics: null,
-  cordssite: [[452,21,22,600],[1094,22,671,596]],
-  cordszone: {'0': [[115,90,1050,200],[120,235,1050,350],[120,430,1050,580]],
-              '1': [[300,130,944,288],[299,353,945,517]]}
+  currentDisplay: 'tracker',
+  cordssite: [[94,181,105,222,188,252,208,138],[217,133,196,258,377,118,350,72],[353,72,438,22,462,40,383,114]]
 };
 
 const simpleReducer = (state = initialState, action) => {
@@ -34,6 +33,15 @@ const simpleReducer = (state = initialState, action) => {
 
       case 'rowtozone':
       return { ...state, currentStatus: "zone"}
+
+      case 'setnavigationitem':
+      return { ...state, currentDisplay: action.payload}
+
+      case 'setzone':
+      return { ...state, currentZone: action.payload}
+
+      case 'setrow':
+      return { ...state, currentRow: action.payload}
      
     default:
       return state

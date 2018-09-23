@@ -2,25 +2,76 @@ import React, {Component} from 'react';
 import ButtonAppBar from './ButtonAppBar';
 import ImageMapper from 'react-image-mapper';
 import { connect } from 'react-redux';
-import {sitetozone} from './actions/statuschange';
+import {setzone} from './actions/statuschange';
 import {zonetorow} from './actions/statuschange';
 import {zonetosite} from './actions/statuschange';
 import {rowtozone} from './actions/statuschange';
 import {rowtorow} from './actions/statuschange';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import Modal from '@material-ui/core/Modal';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import RowItems from './RowItems.js';
+import RowData from './RowData';
+
+function getModalStyle(){
+  const top = 40;
+  const left = 17;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+  };
+}
+
+const styles = theme => ({
+  paper: {
+    position: 'absolute',
+    width: theme.spacing.unit * 100,
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing.unit * 4,
+  },
+});
+const ITEM_HEIGHT = 48;
 
 class SiteImage extends Component{
 
-  state = {widt:500}
+  state = {
+    widt:500,
+    open: false,
+    currentzone: 0,
+    currentrow:"",
+    open1: false,
+    rows:["Row1", "Row2", "Row3", "Row4", "Row5", "Row6", "Row7", "Row8", "Row9", "Row10"],
+    anchorEl: null,
+  };
+  wids = [];
 
+  handleOpen = () => {
+    this.setState({ open: true });
+  };
 
+  handleClose = () => {
+    this.setState({ open: false });
+  };
 
+  handleClick = event => {
+    this.setState({ anchorEl: event.currentTarget });
+  };
 
-
-
-
-    wids = [];
-
-
+  handleClose1 = (option) => {
+    console.log(option);
+    this.state.open1 = true;
+    console.log(this.state.anchorEl);
+    this.setState({anchorEl: null});
+    console.log(this.props.currentrow,this.state.anchorEl);
+  };
 
 load = () => {
 	console.log("loaded");
@@ -28,17 +79,8 @@ load = () => {
 
 clicked=(area)=>{
   console.log("clicked" + area._id);
-  if(this.props.currentStatus === 'site'){
-    this.props.dispatch(sitetozone(area._id));
-  }
-  if(this.props.currentStatus === 'zone'){
-    this.props.dispatch(zonetorow(area._id));
-  }
-  if(this.props.currentStatus === 'row'){
-    this.props.dispatch(rowtorow(area._id));
-  }
-	
-	
+  this.setState({currentzone: area._id});
+  this.handleOpen();
 }
 
 enterArea = (area) => {
@@ -53,96 +95,49 @@ clickedOutside = (evt) => {
 	console.log("outside");
 }
 
-back = () => {
-  if(this.props.currentStatus === 'zone'){
-    this.props.dispatch(zonetosite());
-  }
-  if(this.props.currentStatus === 'row'){
-    this.props.dispatch(rowtozone());
-  }
-}
+render(){
+    const { anchorEl } = this.state;
+    const open = Boolean(anchorEl);
 
+    const { rows } = this.state;
 
-
-
-current_picture =  () => {  
-  switch(this.props.currentStatus) {
-    case 'site':
-      return './site.png';
-    case 'zone':
-      return './zone' + this.props.currentZone + '.png';  
-    case 'row':
-      return './zone' + this.props.currentZone + '.png';
-  }
-}
-
-	
-	render(){
+    const { classes } = this.props;
 
     var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-		console.log(w);
+		console.log(w,h);
         this.widw = Math.floor(parseFloat(0.6 * w));
         this.widh = Math.floor(parseFloat(0.7 * h));
         console.log(this.wids);var widarray=[];this.wids=[];
-        if(this.props.currentStatus === 'site'){
         for(var i=0; i<this.props.cordssite.length; i++){
-          widarray=[];
-            widarray.push(Math.floor(parseFloat(this.props.cordssite[i][0]*(this.widw/1152))));
-            widarray.push(Math.floor(parseFloat(this.props.cordssite[i][1]*(this.widh/648))));
-            widarray.push(Math.floor(parseFloat(this.props.cordssite[i][2]*(this.widw/1152))));
-            widarray.push(Math.floor(parseFloat(this.props.cordssite[i][3]*(this.widh/648))));
+            widarray=[];
+            widarray.push(Math.floor(parseFloat(this.props.cordssite[i][0]*(this.widw/533))));
+            widarray.push(Math.floor(parseFloat(this.props.cordssite[i][1]*(this.widh/329))));
+            widarray.push(Math.floor(parseFloat(this.props.cordssite[i][2]*(this.widw/533))));
+            widarray.push(Math.floor(parseFloat(this.props.cordssite[i][3]*(this.widh/329))));
+            widarray.push(Math.floor(parseFloat(this.props.cordssite[i][4]*(this.widw/533))));
+            widarray.push(Math.floor(parseFloat(this.props.cordssite[i][5]*(this.widh/329))));
+            widarray.push(Math.floor(parseFloat(this.props.cordssite[i][6]*(this.widw/533))));
+            widarray.push(Math.floor(parseFloat(this.props.cordssite[i][7]*(this.widh/329))));
             this.wids.push(widarray);
         }
-      }
-
-
-        else{
-
-          var cur_z = this.props.currentZone.toString();
-          console.log(this.props.currentZone);
-          console.log(this.props.cordszone);
-          var cordzone = this.props.cordszone[cur_z];this.wids=[];
-          console.log(cordzone);var widarray=[];
-          for(var i=0; i<cordzone.length;i++)
-          {widarray=[];
-            widarray.push(Math.floor(parseFloat(cordzone[i][0]*(this.widw/1152))));
-            widarray.push(Math.floor(parseFloat(cordzone[i][1]*(this.widh/648))));
-            widarray.push(Math.floor(parseFloat(cordzone[i][2]*(this.widw/1152))));
-            widarray.push(Math.floor(parseFloat(cordzone[i][3]*(this.widh/648))));
-            this.wids.push(widarray);
-          }
-        }
-
         var area=[];
         var currr = this.curr_picc;
-      if(this.props.currentStatus === 'site'){
         for(var i=0; i<this.props.cordssite.length; i++){
-            var obj = { _id: i , shape: "rect", coords: [this.wids[i][0],this.wids[i][1],this.wids[i][2],this.wids[i][3]] }
+            var obj = { _id: i , shape: "poly", coords: [this.wids[i][0],this.wids[i][1],this.wids[i][2],this.wids[i][3],this.wids[i][4],this.wids[i][5],this.wids[i][6],this.wids[i][7]] }
             area.push(obj);
         }
-      }
-
-      else{
-        var curr_z = this.props.currentZone.toString();
-        console.log(typeof(curr_z));
-        var cordzonee = this.props.cordszone[curr_z];
-        for(var i=0; i<cordzonee.length; i++){
-          var obj = { _id: i , shape: "rect", coords: [this.wids[i][0],this.wids[i][1],this.wids[i][2],this.wids[i][3]] }
-          area.push(obj);
-      }
-    }
 
 		
 		var MAP = {
   name: "my-map",
   areas: area
-}	
+}
 
 		return(<div className="w3-center">  			
 
-					<div className="imag"> 
-					<ImageMapper src={require(`${this.current_picture()}`)} map={MAP} width={this.widw} height={this.widh}
+				<div className="imag"> 
+					<ImageMapper src={require('./sun.png')} map={MAP} width={this.widw} height={this.widh}
 						onLoad={() => this.load()}
 						onClick={area => this.clicked(area)}
 						onMouseEnter={area => this.enterArea(area)}
@@ -150,19 +145,87 @@ current_picture =  () => {
 						onImageClick={evt => this.clickedOutside(evt)}
 					/>
           </div>
+          <Modal
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+          open={this.state.open}
+          onClose={this.handleClose}
+        >
+        <div>
+          <div style={getModalStyle()} className={classes.paper}>
+            <div className="w3-row">
+            <div className="w3-col s2">
+                    <IconButton
+                    aria-label="More"
+                    aria-owns={open ? 'long-menu' : null}
+                    aria-haspopup="true"
+                    onClick={this.handleClick}
+                      >
+                        <MoreVertIcon />
+                    </IconButton>
+            </div>
+            <div className="w3-col s5 top">              
+                    {"zone" + this.state.currentzone + "  Data"}              
+            </div>
+
+              <div className="w3-col s5"> 
+                <RowData />
+              </div>
+            </div>
+          </div>
+        
+        <div>
+        <IconButton
+          aria-label="More"
+          aria-owns={open ? 'long-menu' : null}
+          aria-haspopup="true"
+          onClick={this.handleClick}
+        >
+          <MoreVertIcon />
+        </IconButton>
+        <Menu
+          id="long-menu"
+          anchorEl={anchorEl}
+          open={open}
+          onClose={this.handleClose1}
+          PaperProps={{
+            style: {
+              maxHeight: ITEM_HEIGHT * 4.5,
+              width: 200,
+            },
+          }}
+        >
+                {this.state.rows.map(option => (
+                    <RowItems option={option} handle={this.handleClose1}/>                  
+                )
+                )}
+        </Menu>
+      </div>
+      <div>
+        {this.state.open1 === true && 
+        <div>
+          {this.state.currentrow}
+        </div>
+          }
+      </div>
+          
+
+
+      </div>
+      </Modal>
 
 </div>
 );
 }
 }
 
+SiteImage.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
 const mapStateToProps = state => ({
-  currentStatus: state.currentStatus,
   currentZone: state.currentZone,
-  currentRow: state.currentRow,
-  cordssite: state.cordssite,
-  cordszone: state.cordszone
+  cordssite: state.cordssite
 })
 
-export default connect(mapStateToProps)(SiteImage);
-
+export default connect(mapStateToProps)(withStyles(styles)(SiteImage));

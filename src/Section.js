@@ -4,7 +4,6 @@ import { withStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Hidden from '@material-ui/core/Hidden';
@@ -15,6 +14,7 @@ import SiteInfo from './SiteInfo';
 import SiteImage from './SiteImage';
 import {zonetosite} from './actions/statuschange';
 import {rowtozone} from './actions/statuschange';
+import OpTable from './OpTable.js';
 
 const drawerWidth = 240;
 const vhh = Math.max(document.documentElement.clientHeight, window.innerHeight|| 0);
@@ -22,20 +22,16 @@ const vhh = Math.max(document.documentElement.clientHeight, window.innerHeight||
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    height:(.8*vhh),
     zIndex: 1,
     overflow: 'hidden',
     position: 'relative',
-    display: 'flex',
-    width: '100%',
+  
   },
   appBar: {
     position: 'absolute',
-    marginLeft: drawerWidth,
+    
     backgroundColor: 'black',
-    [theme.breakpoints.up('md')]: {
-      width: `calc(100% - ${drawerWidth}px)`,
-    },
+
   },
   navIconHide: {
     [theme.breakpoints.up('md')]: {
@@ -51,8 +47,8 @@ const styles = theme => ({
   },
   content: {
     flexGrow: 1,
-    backgroundColor: theme.palette.background.default,
-    padding: theme.spacing.unit * 3,
+    backgroundColor: 'silver',
+    
   },
 });
 
@@ -85,54 +81,29 @@ class ResponsiveDrawer extends React.Component {
     );
 
     return (
-      <div className={classes.root}>
-        <AppBar className={classes.appBar}>
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="Open drawer"
-              onClick={this.handleDrawerToggle}
-              className={classes.navIconHide}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="title" color="inherit" noWrap>
-              {this.props.currentStatus} Image
-            </Typography>
-            <div className="w3-center fa fa-arrow-left" onClick={this.back}></div>
-          </Toolbar>
-        </AppBar>
-        <Hidden mdUp>
-          <Drawer
-            variant="temporary"
-            anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-            open={this.state.mobileOpen}
-            onClose={this.handleDrawerToggle}
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-            ModalProps={{
-              keepMounted: true, // Better open performance on mobile.
-            }}
-          >
-            {drawer}
-          </Drawer>
-        </Hidden>
-        <Hidden smDown implementation="css">
-          <Drawer
-            variant="permanent"
-            open
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-          >
-            {drawer}
-          </Drawer>
-        </Hidden>
-        <main className={classes.content}>
-          <div className={classes.toolbar} />
-          <SiteImage />
-        </main>
+      <div className="w3-row row">
+        <div className="w3-container w3-twothird">
+          <div className={classes.root} id="wrap">
+
+            <main className={classes.content}>
+              <div className={classes.toolbar} />
+              <SiteImage />
+            </main>
+          </div>
+        </div>
+
+        <div className="w3-container w3-third center">
+        <div className="imag imagg">
+          <img className="image w3-border w3-border-black" src={ require('./sunn.png') } />
+        </div>
+        <div>
+          <p><b><font color="red" size="5">STATUS:</font> <font color="blue" size="5">ALL WELL</font></b></p>
+        </div>
+          <div className="op">
+            <OpTable />
+          </div>
+        </div>
+
       </div>
     );
   }
